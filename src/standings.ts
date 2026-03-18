@@ -18,5 +18,6 @@ export function deriveTeamStats(raw: RawTeam) {
     wins: raw.wins,
     losses: raw.losses,
     otLosses: raw.otLosses,
+    points: raw.points,
   };
 }
