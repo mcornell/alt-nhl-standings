@@ -7,6 +7,10 @@ interface TeamRow {
   points: number;
 }
 
+export function renderTableHeader(): string {
+  return `<tr><th>Team</th><th>GP</th><th>W</th><th>L</th><th>OTL</th><th>PTS</th></tr>`;
+}
+
 export function renderForm(): string {
   const outcomes = ["Reg Win", "OT Win", "SO Win", "OT Loss", "SO Loss", "Reg Loss"];
   const inputs = outcomes.map((label) => {

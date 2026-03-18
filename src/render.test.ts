@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderTeamRow, renderForm } from "./render.ts";
+import { renderTeamRow, renderForm, renderTableHeader } from "./render.ts";
 
 describe("renderTeamRow", () => {
   it("includes the team name in a data-testid='team-name' element", () => {
@@ -27,6 +27,16 @@ describe("renderTeamRow", () => {
     expect(html).toContain("13");
     expect(html).toContain("9");
     expect(html).toContain("97");
+  });
+});
+
+describe("renderTableHeader", () => {
+  it("renders th elements for Team, GP, W, L, OTL, PTS", () => {
+    const html = renderTableHeader();
+    for (const label of ["Team", "GP", "W", "L", "OTL", "PTS"]) {
+      expect(html).toContain(label);
+    }
+    expect(html).toContain("<th");
   });
 });
 
