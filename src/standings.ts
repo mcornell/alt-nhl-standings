@@ -65,7 +65,7 @@ export function deriveTeamStats(raw: RawTeam): TeamStats {
   };
 }
 
-export function groupStandings(teams: TeamStats[]): ConferenceGroup[] {
+export function groupStandings(teams: TeamStats[], getPoints: (t: TeamStats) => number = (t) => t.points): ConferenceGroup[] {
   const conferences = [...new Set(teams.map((t) => t.conferenceName))].sort();
   return conferences.map((conf) => {
     const confTeams = teams.filter((t) => t.conferenceName === conf);
@@ -74,12 +74,12 @@ export function groupStandings(teams: TeamStats[]): ConferenceGroup[] {
     const divisions: DivisionGroup[] = divisionNames.map((div) => {
       const divTeams = confTeams
         .filter((t) => t.divisionName === div)
-        .sort((a, b) => b.points - a.points);
+        .sort((a, b) => getPoints(b) - getPoints(a));
       const top3 = divTeams.slice(0, 3);
       wildCard.push(...divTeams.slice(3));
       return { name: div, teams: top3 };
     });
-    wildCard.sort((a, b) => b.points - a.points);
+    wildCard.sort((a, b) => getPoints(b) - getPoints(a));
     return { conference: conf, divisions, wildCard };
   });
 }

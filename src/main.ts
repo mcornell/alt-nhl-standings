@@ -1,13 +1,10 @@
-import { deriveTeamStats, calculateCustomPoints, sortByCustomPoints, type TeamStats, type PointValues } from "./standings.ts";
-import { renderTeamRow, renderForm, renderTableHeader } from "./render.ts";
+import { deriveTeamStats, calculateCustomPoints, groupStandings, type TeamStats, type PointValues } from "./standings.ts";
+import { renderConferenceStandings, renderForm } from "./render.ts";
 
-function renderTable(teams: TeamStats[], pointValues?: PointValues): string {
-  const ordered = pointValues ? sortByCustomPoints(teams, pointValues) : teams;
-  const rows = ordered.map((team) => {
-    const points = pointValues ? calculateCustomPoints(team, pointValues) : team.points;
-    return renderTeamRow({ ...team, points });
-  }).join("");
-  return `<table>${renderTableHeader()}${rows}</table>`;
+function getPoints(teams: TeamStats[], pv?: PointValues): (t: TeamStats) => number {
+  return pv
+    ? (t) => calculateCustomPoints(t, pv)
+    : (t) => t.points;
 }
 
 function readPointValues(form: HTMLFormElement): PointValues {
@@ -31,13 +28,18 @@ async function main() {
   app.style.display = "flex";
   app.style.alignItems = "flex-start";
   app.style.gap = "2rem";
-  app.innerHTML = renderTable(teams) + renderForm();
 
-  app.querySelector("form")!.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const pv = readPointValues(e.target as HTMLFormElement);
-    app.innerHTML = renderTable(teams, pv) + renderForm();
-  });
+  const render = (pv?: PointValues) => {
+    const pts = getPoints(teams, pv);
+    const groups = groupStandings(teams, pts);
+    app.innerHTML = renderConferenceStandings(groups, pts) + renderForm();
+    app.querySelector("form")!.addEventListener("submit", (e) => {
+      e.preventDefault();
+      render(readPointValues(e.target as HTMLFormElement));
+    });
+  };
+
+  render();
 }
 
 main();

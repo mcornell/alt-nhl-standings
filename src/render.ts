@@ -1,3 +1,5 @@
+import type { ConferenceGroup, TeamStats } from "./standings.ts";
+
 interface TeamRow {
   teamName: string;
   gamesPlayed: number;
@@ -28,6 +30,26 @@ export function renderForm(): string {
     return `<label for="${id}">${label}</label><select id="${id}">${options}</select>`;
   }).join("");
   return `<form>${selects}<button type="submit">Calculate</button></form>`;
+}
+
+function renderDivisionTable(teams: TeamStats[], points: (t: TeamStats) => number, separator?: number): string {
+  const rows = teams.map((team, i) => {
+    const row = renderTeamRow({ ...team, points: points(team) });
+    return separator !== undefined && i === separator - 1
+      ? row + `<tr class="wildcard-cutoff"><td colspan="6"></td></tr>`
+      : row;
+  }).join("");
+  return `<table>${renderTableHeader()}<tbody>${rows}</tbody></table>`;
+}
+
+export function renderConferenceStandings(groups: ConferenceGroup[], points: (t: TeamStats) => number): string {
+  return groups.map(({ conference, divisions, wildCard }) => {
+    const divHtml = divisions.map(({ name, teams }) =>
+      `<section aria-label="${name}"><h3>${name}</h3>${renderDivisionTable(teams, points)}</section>`
+    ).join("");
+    const wcHtml = `<section aria-label="Wild Card"><h3>Wild Card</h3>${renderDivisionTable(wildCard, points, 2)}</section>`;
+    return `<section aria-label="${conference}"><h2>${conference}</h2>${divHtml}${wcHtml}</section>`;
+  }).join("");
 }
 
 export function renderTeamRow(team: TeamRow): string {

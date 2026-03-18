@@ -1,0 +1,6 @@
+[      62ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:5174/favicon.ico:0
+[     317ms] [ERROR] Access to fetch at 'https://api-web.nhle.com/v1/standings/2026-03-18' (redirected from 'http://localhost:5174/nhl-api/v1/standings/now') from origin 'http://localhost:5174' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. @ http://localhost:5174/:0
+[     318ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://api-web.nhle.com/v1/standings/2026-03-18:0
+[     322ms] TypeError: Failed to fetch
+    at main (http://localhost:5174/src/main.ts:26:20)
+    at http://localhost:5174/src/main.ts:40:1

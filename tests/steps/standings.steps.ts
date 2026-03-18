@@ -12,12 +12,12 @@ Given("I open the standings page", async ({ page }) => {
 });
 
 Then("I see a standings table", async ({ page }) => {
-  await expect(page.getByRole("table")).toBeVisible();
+  await expect(page.getByRole("table").first()).toBeVisible();
 });
 
 Then("the table contains at least one team name", async ({ page }) => {
   const firstTeamName = page
-    .getByRole("table")
+    .getByRole("table").first()
     .getByRole("row")
     .nth(1)
     .getByTestId("team-name");
@@ -52,8 +52,27 @@ Then("the point inputs default to Reg Win=2, OT Win=2, SO Win=2, Reg Loss=0, OT 
   }
 });
 
+Then("I see an {string} conference section", async ({ page }, conference) => {
+  await expect(page.getByRole("region", { name: conference })).toBeVisible();
+});
+
+Then("I see a {string} conference section", async ({ page }, conference) => {
+  await expect(page.getByRole("region", { name: conference })).toBeVisible();
+});
+
+Then("{string} appears under the {string} division in {string}", async ({ page }, team, division, conference) => {
+  const confSection = page.getByRole("region", { name: conference });
+  const divSection = confSection.getByRole("region", { name: division });
+  await expect(divSection.getByText(team)).toBeVisible();
+});
+
+Then("I see a Wild Card section under {string}", async ({ page }, conference) => {
+  const confSection = page.getByRole("region", { name: conference });
+  await expect(confSection.getByRole("region", { name: "Wild Card" })).toBeVisible();
+});
+
 Then("the table has column headers: Team, GP, W, L, OTL, PTS", async ({ page }) => {
-  const table = page.getByRole("table");
+  const table = page.getByRole("table").first();
   for (const text of ["Team", "GP", "W", "L", "OTL", "PTS"]) {
     await expect(table.getByRole("columnheader", { name: text, exact: true })).toBeVisible();
   }
@@ -72,18 +91,19 @@ When("I click Calculate", async ({ page }) => {
   await page.getByRole("button", { name: "Calculate" }).click();
 });
 
-Then("the first team in the standings is {string}", async ({ page }, expectedName) => {
-  const firstRow = page.getByRole("table").getByRole("row").nth(1);
-  await expect(firstRow.getByTestId("team-name")).toHaveText(expectedName);
+Then("{string} shows custom points of {int}", async ({ page }, teamName, expected) => {
+  const row = page.getByTestId("team-name").filter({ hasText: teamName }).locator("xpath=..");
+  await expect(row.getByTestId("points")).toHaveText(String(expected));
 });
 
-Then("the first team's points show {int}", async ({ page }, expected) => {
-  const firstRow = page.getByRole("table").getByRole("row").nth(1);
-  await expect(firstRow.getByTestId("points")).toHaveText(String(expected));
+Then("{string} is first in the {string} division", async ({ page }, teamName, division) => {
+  const divSection = page.getByRole("region", { name: division });
+  const firstRow = divSection.getByRole("table").getByRole("row").nth(1);
+  await expect(firstRow.getByTestId("team-name")).toHaveText(teamName);
 });
 
 Then("the first row shows the team's games played, wins, losses, OT losses, and points", async ({ page }) => {
-  const firstRow = page.getByRole("table").getByRole("row").nth(1);
+  const firstRow = page.getByRole("table").first().getByRole("row").nth(1);
   await expect(firstRow.getByTestId("games-played")).not.toBeEmpty();
   await expect(firstRow.getByTestId("wins")).not.toBeEmpty();
   await expect(firstRow.getByTestId("losses")).not.toBeEmpty();

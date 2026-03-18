@@ -22,7 +22,7 @@ Feature: View NHL standings
     Given I open the standings page
     When I enter 3 for "Reg Win", 2 for "OT Win", 1 for "SO Win", 1 for "OT Loss", 0 for "SO Loss", 0 for "Reg Loss"
     And I click Calculate
-    Then the first team's points show 128
+    Then "Colorado Avalanche" shows custom points of 128
 
   Scenario: Form inputs are dropdowns with options 0 through 4
     Given I open the standings page
@@ -32,8 +32,19 @@ Feature: View NHL standings
     Given I open the standings page
     Then the point inputs default to Reg Win=2, OT Win=2, SO Win=2, Reg Loss=0, OT Loss=1, SO Loss=1
 
+  Scenario: Standings are grouped into conference wild card view
+    Given I open the standings page
+    Then I see an "Eastern" conference section
+    And I see a "Western" conference section
+    And "Buffalo Sabres" appears under the "Atlantic" division in "Eastern"
+    And "Carolina Hurricanes" appears under the "Metropolitan" division in "Eastern"
+    And "Colorado Avalanche" appears under the "Central" division in "Western"
+    And "Anaheim Ducks" appears under the "Pacific" division in "Western"
+    And I see a Wild Card section under "Eastern"
+    And I see a Wild Card section under "Western"
+
   Scenario: Standings re-rank by custom points after Calculate
     Given I open the standings page
     When I enter 2 for "Reg Win", 3 for "OT Win", 3 for "SO Win", 1 for "OT Loss", 1 for "SO Loss", 0 for "Reg Loss"
     And I click Calculate
-    Then the first team in the standings is "Dallas Stars"
+    Then "Minnesota Wild" is first in the "Central" division
