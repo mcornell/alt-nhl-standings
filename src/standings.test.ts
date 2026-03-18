@@ -34,4 +34,21 @@ describe("deriveTeamStats", () => {
 
     expect(deriveTeamStats(raw).teamName).toBe("Colorado Avalanche");
   });
+
+  it("extracts gamesPlayed from raw API data", () => {
+    const raw = {
+      teamName: { default: "Colorado Avalanche" },
+      gamesPlayed: 66,
+      wins: 44,
+      losses: 13,
+      otLosses: 9,
+      points: 97,
+      regulationWins: 39,
+      regulationPlusOtWins: 41,
+      shootoutWins: 3,
+      shootoutLosses: 5,
+    };
+
+    expect(deriveTeamStats(raw).gamesPlayed).toBe(66);
+  });
 });
