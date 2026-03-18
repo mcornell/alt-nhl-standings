@@ -25,9 +25,6 @@ async function main() {
   const teams = data.standings.map((raw) => deriveTeamStats(raw as Parameters<typeof deriveTeamStats>[0]));
 
   const app = document.getElementById("app")!;
-  app.style.display = "flex";
-  app.style.alignItems = "flex-start";
-  app.style.gap = "2rem";
 
   const render = (pv?: PointValues) => {
     const pts = getPoints(teams, pv);
