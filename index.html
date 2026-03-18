@@ -4,13 +4,262 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Alt NHL Standings</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800&family=Barlow:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      :root {
+        --bg:        #0d0f12;
+        --surface:   #161a20;
+        --border:    #252b34;
+        --text:      #e8edf2;
+        --muted:     #6b7a8d;
+        --accent:    #4db8ff;
+        --accent-dim:#1e4a6e;
+        --danger:    #e84040;
+        --gold:      #f0a500;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--text);
+        font-family: 'Barlow', sans-serif;
+        font-size: 14px;
+        min-height: 100vh;
+        padding: 2.5rem 2rem 4rem;
+      }
+
+      /* ── Title ── */
+      header {
+        text-align: center;
+        margin-bottom: 2.5rem;
+      }
+      header h1 {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 800;
+        font-size: clamp(2.2rem, 5vw, 3.6rem);
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        color: var(--text);
+        line-height: 1;
+      }
+      header h1 span {
+        color: var(--accent);
+      }
+      header p {
+        color: var(--muted);
+        font-size: 0.8rem;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        margin-top: 0.4rem;
+      }
+
+      /* ── Layout ── */
+      #app {
+        display: flex;
+        align-items: flex-start;
+        gap: 2rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      /* ── Standings ── */
+      #standings {
+        flex: 1;
+        display: flex;
+        gap: 2rem;
+        min-width: 0;
+      }
+
+      .conference {
+        flex: 1;
+        min-width: 0;
+      }
+      .conference > h2 {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 700;
+        font-size: 1.05rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--accent);
+        border-bottom: 2px solid var(--accent);
+        padding-bottom: 0.35rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .division {
+        margin-bottom: 1.5rem;
+      }
+      .division h3 {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 600;
+        font-size: 0.72rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 0.5rem;
+      }
+
+      /* ── Tables ── */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.82rem;
+      }
+
+      thead th {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 600;
+        font-size: 0.68rem;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: right;
+        padding: 0.3rem 0.5rem;
+        border-bottom: 1px solid var(--border);
+        background: var(--surface);
+      }
+      thead th:first-child { text-align: left; padding-left: 0.75rem; }
+
+      tbody tr {
+        border-bottom: 1px solid var(--border);
+        transition: background 0.12s;
+      }
+      tbody tr:hover { background: var(--surface); }
+      tbody tr:last-child { border-bottom: none; }
+
+      tbody td {
+        padding: 0.42rem 0.5rem;
+        text-align: right;
+        color: var(--text);
+        white-space: nowrap;
+      }
+      tbody td:first-child {
+        text-align: left;
+        padding-left: 0.75rem;
+        font-weight: 500;
+      }
+      td[data-testid="points"] {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 700;
+        font-size: 0.95rem;
+        color: var(--gold);
+      }
+
+      /* ── Wildcard cutoff ── */
+      tr.wildcard-cutoff td {
+        padding: 0;
+        height: 2px;
+        background: var(--danger);
+        border: none;
+        box-shadow: 0 0 6px var(--danger);
+      }
+
+      /* ── Form panel ── */
+      #form-panel {
+        width: 210px;
+        flex-shrink: 0;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1.25rem 1rem 1rem;
+        position: sticky;
+        top: 2rem;
+      }
+
+      #form-panel h2 {
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 700;
+        font-size: 0.72rem;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+        gap: 0.55rem;
+      }
+
+      .form-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.5rem;
+      }
+
+      form label {
+        font-size: 0.78rem;
+        color: var(--muted);
+        white-space: nowrap;
+      }
+
+      form select {
+        width: 52px;
+        background: var(--bg);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 3px;
+        padding: 0.25rem 0.3rem;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-align: center;
+        cursor: pointer;
+        appearance: none;
+        -webkit-appearance: none;
+      }
+      form select:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px var(--accent-dim);
+      }
+
+      .form-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 0.25rem 0;
+      }
+
+      form button {
+        margin-top: 0.5rem;
+        width: 100%;
+        padding: 0.6rem;
+        background: var(--accent);
+        color: #000;
+        border: none;
+        border-radius: 4px;
+        font-family: 'Barlow Condensed', sans-serif;
+        font-weight: 700;
+        font-size: 0.9rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 0.15s, transform 0.1s;
+      }
+      form button:hover { background: #80cfff; }
+      form button:active { transform: scale(0.98); }
+
+      /* ── Page load fade-in ── */
+      @keyframes fadeUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      header { animation: fadeUp 0.4s ease both; }
+      #app    { animation: fadeUp 0.5s 0.1s ease both; }
+    </style>
   </head>
-  <style>
-    body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; padding: 2rem; }
-    #app { display: flex; align-items: flex-start; gap: 2rem; }
-  </style>
   <body>
-    <h1>Alt NHL Standings</h1>
+    <header>
+      <h1><span>Alt</span> NHL Standings</h1>
+      <p>Recalculate &amp; re-rank with custom point values</p>
+    </header>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

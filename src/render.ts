@@ -23,13 +23,14 @@ const OUTCOMES: { label: string; id: string; defaultVal: number }[] = [
 ];
 
 export function renderForm(): string {
-  const selects = OUTCOMES.map(({ label, id, defaultVal }) => {
+  const rows = OUTCOMES.map(({ label, id, defaultVal }, i) => {
     const options = [4, 3, 2, 1, 0].map((v) =>
       `<option value="${v}"${v === defaultVal ? " selected" : ""}>${v}</option>`
     ).join("");
-    return `<label for="${id}">${label}</label><select id="${id}">${options}</select>`;
+    const divider = i === 2 ? `<div class="form-divider"></div>` : "";
+    return `${divider}<div class="form-row"><label for="${id}">${label}</label><select id="${id}">${options}</select></div>`;
   }).join("");
-  return `<form>${selects}<button type="submit">Calculate</button></form>`;
+  return `<div id="form-panel"><h2>Points per outcome</h2><form>${rows}<button type="submit">Calculate</button></form></div>`;
 }
 
 function renderDivisionTable(teams: TeamStats[], points: (t: TeamStats) => number, separator?: number): string {
@@ -43,13 +44,14 @@ function renderDivisionTable(teams: TeamStats[], points: (t: TeamStats) => numbe
 }
 
 export function renderConferenceStandings(groups: ConferenceGroup[], points: (t: TeamStats) => number): string {
-  return groups.map(({ conference, divisions, wildCard }) => {
+  const confsHtml = groups.map(({ conference, divisions, wildCard }) => {
     const divHtml = divisions.map(({ name, teams }) =>
-      `<section aria-label="${name}"><h3>${name}</h3>${renderDivisionTable(teams, points)}</section>`
+      `<section class="division" aria-label="${name}"><h3>${name}</h3>${renderDivisionTable(teams, points)}</section>`
     ).join("");
-    const wcHtml = `<section aria-label="Wild Card"><h3>Wild Card</h3>${renderDivisionTable(wildCard, points, 2)}</section>`;
-    return `<section aria-label="${conference}"><h2>${conference}</h2>${divHtml}${wcHtml}</section>`;
+    const wcHtml = `<section class="division" aria-label="Wild Card"><h3>Wild Card</h3>${renderDivisionTable(wildCard, points, 2)}</section>`;
+    return `<section class="conference" aria-label="${conference}"><h2>${conference}</h2>${divHtml}${wcHtml}</section>`;
   }).join("");
+  return `<div id="standings">${confsHtml}</div>`;
 }
 
 export function renderTeamRow(team: TeamRow): string {
