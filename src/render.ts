@@ -11,13 +11,23 @@ export function renderTableHeader(): string {
   return `<thead><tr><th scope="col">Team</th><th scope="col">GP</th><th scope="col">W</th><th scope="col">L</th><th scope="col">OTL</th><th scope="col">PTS</th></tr></thead>`;
 }
 
+const OUTCOMES: { label: string; id: string; defaultVal: number }[] = [
+  { label: "Reg Win",  id: "reg-win",  defaultVal: 2 },
+  { label: "OT Win",   id: "ot-win",   defaultVal: 2 },
+  { label: "SO Win",   id: "so-win",   defaultVal: 2 },
+  { label: "Reg Loss", id: "reg-loss", defaultVal: 0 },
+  { label: "OT Loss",  id: "ot-loss",  defaultVal: 1 },
+  { label: "SO Loss",  id: "so-loss",  defaultVal: 1 },
+];
+
 export function renderForm(): string {
-  const outcomes = ["Reg Win", "OT Win", "SO Win", "OT Loss", "SO Loss", "Reg Loss"];
-  const inputs = outcomes.map((label) => {
-    const id = label.toLowerCase().replace(/ /g, "-");
-    return `<label for="${id}">${label}</label><input id="${id}" type="number" min="0" max="4" />`;
+  const selects = OUTCOMES.map(({ label, id, defaultVal }) => {
+    const options = [4, 3, 2, 1, 0].map((v) =>
+      `<option value="${v}"${v === defaultVal ? " selected" : ""}>${v}</option>`
+    ).join("");
+    return `<label for="${id}">${label}</label><select id="${id}">${options}</select>`;
   }).join("");
-  return `<form>${inputs}<button type="submit">Calculate</button></form>`;
+  return `<form>${selects}<button type="submit">Calculate</button></form>`;
 }
 
 export function renderTeamRow(team: TeamRow): string {

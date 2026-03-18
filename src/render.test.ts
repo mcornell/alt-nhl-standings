@@ -41,10 +41,35 @@ describe("renderTableHeader", () => {
 });
 
 describe("renderForm", () => {
-  it("renders labeled inputs for all six outcomes", () => {
+  it("renders labeled selects in order: Reg Win, OT Win, SO Win, Reg Loss, OT Loss, SO Loss", () => {
     const html = renderForm();
-    for (const label of ["Reg Win", "OT Win", "SO Win", "OT Loss", "SO Loss", "Reg Loss"]) {
-      expect(html).toContain(label);
+    const order = ["Reg Win", "OT Win", "SO Win", "Reg Loss", "OT Loss", "SO Loss"];
+    const positions = order.map((label) => html.indexOf(label));
+    expect(positions).toEqual([...positions].sort((a, b) => a - b));
+  });
+
+  it("renders selects with options 0 through 4", () => {
+    const html = renderForm();
+    for (const val of ["0", "1", "2", "3", "4"]) {
+      expect(html).toContain(`value="${val}"`);
+    }
+  });
+
+  it("defaults to Reg Win=2, OT Win=2, SO Win=2, Reg Loss=0, OT Loss=1, SO Loss=1", () => {
+    const html = renderForm();
+    const defaults = [
+      ['id="reg-win"', "2"],
+      ['id="ot-win"', "2"],
+      ['id="so-win"', "2"],
+      ['id="reg-loss"', "0"],
+      ['id="ot-loss"', "1"],
+      ['id="so-loss"', "1"],
+    ];
+    for (const [id, value] of defaults) {
+      expect(html).toContain(`${id}`);
+      const selectStart = html.indexOf(id);
+      const selectHtml = html.slice(selectStart, html.indexOf("</select>", selectStart));
+      expect(selectHtml).toContain(`value="${value}" selected`);
     }
   });
 
