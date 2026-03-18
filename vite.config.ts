@@ -6,6 +6,7 @@ export default defineConfig({
       "/nhl-api": {
         target: "https://api-web.nhle.com",
         changeOrigin: true,
+        followRedirects: true,
         rewrite: (path) => path.replace(/^\/nhl-api/, ""),
       },
     },
