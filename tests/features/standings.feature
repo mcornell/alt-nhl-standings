@@ -23,3 +23,9 @@ Feature: View NHL standings
     When I enter 3 for "Reg Win", 2 for "OT Win", 1 for "SO Win", 1 for "OT Loss", 0 for "SO Loss", 0 for "Reg Loss"
     And I click Calculate
     Then the first team's points show 128
+
+  Scenario: Standings re-rank by custom points after Calculate
+    Given I open the standings page
+    When I enter 2 for "Reg Win", 3 for "OT Win", 3 for "SO Win", 1 for "OT Loss", 1 for "SO Loss", 0 for "Reg Loss"
+    And I click Calculate
+    Then the first team in the standings is "Dallas Stars"

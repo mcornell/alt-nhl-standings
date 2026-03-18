@@ -1,8 +1,9 @@
-import { deriveTeamStats, calculateCustomPoints, type TeamStats, type PointValues } from "./standings.ts";
+import { deriveTeamStats, calculateCustomPoints, sortByCustomPoints, type TeamStats, type PointValues } from "./standings.ts";
 import { renderTeamRow, renderForm, renderTableHeader } from "./render.ts";
 
 function renderTable(teams: TeamStats[], pointValues?: PointValues): string {
-  const rows = teams.map((team) => {
+  const ordered = pointValues ? sortByCustomPoints(teams, pointValues) : teams;
+  const rows = ordered.map((team) => {
     const points = pointValues ? calculateCustomPoints(team, pointValues) : team.points;
     return renderTeamRow({ ...team, points });
   }).join("");

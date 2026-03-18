@@ -54,6 +54,11 @@ When("I click Calculate", async ({ page }) => {
   await page.getByRole("button", { name: "Calculate" }).click();
 });
 
+Then("the first team in the standings is {string}", async ({ page }, expectedName) => {
+  const firstRow = page.getByRole("table").getByRole("row").nth(1);
+  await expect(firstRow.getByTestId("team-name")).toHaveText(expectedName);
+});
+
 Then("the first team's points show {int}", async ({ page }, expected) => {
   const firstRow = page.getByRole("table").getByRole("row").nth(1);
   await expect(firstRow.getByTestId("points")).toHaveText(String(expected));
