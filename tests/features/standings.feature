@@ -8,3 +8,8 @@ Feature: View NHL standings
   Scenario: Standings table shows stats for each team
     Given I open the standings page
     Then the first row shows the team's games played, wins, losses, OT losses, and points
+
+  Scenario: Page has a custom points form
+    Given I open the standings page
+    Then I see a form with inputs for Reg Win, OT Win, SO Win, OT Loss, SO Loss, and Reg Loss
+    And the form has a Calculate button

@@ -1,5 +1,5 @@
 import { deriveTeamStats } from "./standings.ts";
-import { renderTeamRow } from "./render.ts";
+import { renderTeamRow, renderForm } from "./render.ts";
 
 async function main() {
   const res = await fetch("https://api-web.nhle.com/v1/standings/now");
@@ -10,7 +10,7 @@ async function main() {
     .map(renderTeamRow)
     .join("");
 
-  document.getElementById("app")!.innerHTML = `<table>${rows}</table>`;
+  document.getElementById("app")!.innerHTML = renderForm() + `<table>${rows}</table>`;
 }
 
 main();
