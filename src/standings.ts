@@ -9,6 +9,8 @@ interface RawTeam {
   regulationPlusOtWins: number;
   shootoutWins: number;
   shootoutLosses: number;
+  conferenceName: string;
+  divisionName: string;
 }
 
 export interface TeamStats {
@@ -22,6 +24,8 @@ export interface TeamStats {
   regulationPlusOtWins: number;
   shootoutWins: number;
   shootoutLosses: number;
+  conferenceName: string;
+  divisionName: string;
 }
 
 export interface PointValues {
@@ -31,6 +35,17 @@ export interface PointValues {
   otLoss: number;
   soLoss: number;
   regLoss: number;
+}
+
+export interface DivisionGroup {
+  name: string;
+  teams: TeamStats[];
+}
+
+export interface ConferenceGroup {
+  conference: string;
+  divisions: DivisionGroup[];
+  wildCard: TeamStats[];
 }
 
 export function deriveTeamStats(raw: RawTeam): TeamStats {
@@ -45,7 +60,28 @@ export function deriveTeamStats(raw: RawTeam): TeamStats {
     regulationPlusOtWins: raw.regulationPlusOtWins,
     shootoutWins: raw.shootoutWins,
     shootoutLosses: raw.shootoutLosses,
+    conferenceName: raw.conferenceName,
+    divisionName: raw.divisionName,
   };
+}
+
+export function groupStandings(teams: TeamStats[]): ConferenceGroup[] {
+  const conferences = [...new Set(teams.map((t) => t.conferenceName))].sort();
+  return conferences.map((conf) => {
+    const confTeams = teams.filter((t) => t.conferenceName === conf);
+    const divisionNames = [...new Set(confTeams.map((t) => t.divisionName))].sort();
+    const wildCard: TeamStats[] = [];
+    const divisions: DivisionGroup[] = divisionNames.map((div) => {
+      const divTeams = confTeams
+        .filter((t) => t.divisionName === div)
+        .sort((a, b) => b.points - a.points);
+      const top3 = divTeams.slice(0, 3);
+      wildCard.push(...divTeams.slice(3));
+      return { name: div, teams: top3 };
+    });
+    wildCard.sort((a, b) => b.points - a.points);
+    return { conference: conf, divisions, wildCard };
+  });
 }
 
 export function sortByCustomPoints(teams: TeamStats[], pv: PointValues): TeamStats[] {
