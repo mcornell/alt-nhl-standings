@@ -23,7 +23,7 @@ function readPointValues(form: HTMLFormElement): PointValues {
 }
 
 async function main() {
-  const res = await fetch("https://api-web.nhle.com/v1/standings/now");
+  const res = await fetch("/nhl-api/v1/standings/now");
   const data = await res.json() as { standings: unknown[] };
   const teams = data.standings.map((raw) => deriveTeamStats(raw as Parameters<typeof deriveTeamStats>[0]));
 

@@ -5,7 +5,7 @@ import standingsFixture from "../fixtures/standings.json" with { type: "json" };
 const { Given, When, Then } = createBdd();
 
 Given("I open the standings page", async ({ page }) => {
-  await page.route("https://api-web.nhle.com/v1/standings/now", (route) =>
+  await page.route("**/nhl-api/v1/standings/now", (route) =>
     route.fulfill({ json: standingsFixture })
   );
   await page.goto("/");
