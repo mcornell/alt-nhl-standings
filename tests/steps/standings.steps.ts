@@ -34,6 +34,24 @@ Then("the form has a Calculate button", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Calculate" })).toBeVisible();
 });
 
+Then("the {string} input is a dropdown with options 0, 1, 2, 3, and 4", async ({ page }, label) => {
+  const select = page.getByLabel(label);
+  await expect(select).toHaveRole("combobox");
+  for (const val of ["0", "1", "2", "3", "4"]) {
+    await expect(select.locator(`option[value="${val}"]`)).toBeAttached();
+  }
+});
+
+Then("the point inputs default to Reg Win=2, OT Win=2, SO Win=2, Reg Loss=0, OT Loss=1, SO Loss=1", async ({ page }) => {
+  const defaults: Record<string, string> = {
+    "Reg Win": "2", "OT Win": "2", "SO Win": "2",
+    "Reg Loss": "0", "OT Loss": "1", "SO Loss": "1",
+  };
+  for (const [label, value] of Object.entries(defaults)) {
+    await expect(page.getByLabel(label)).toHaveValue(value);
+  }
+});
+
 Then("the table has column headers: Team, GP, W, L, OTL, PTS", async ({ page }) => {
   const table = page.getByRole("table");
   for (const text of ["Team", "GP", "W", "L", "OTL", "PTS"]) {
@@ -42,12 +60,12 @@ Then("the table has column headers: Team, GP, W, L, OTL, PTS", async ({ page }) 
 });
 
 When("I enter {int} for {string}, {int} for {string}, {int} for {string}, {int} for {string}, {int} for {string}, {int} for {string}", async ({ page }, rw, _l1, otw, _l2, sow, _l3, otl, _l4, sol, _l5, rl, _l6) => {
-  await page.getByLabel("Reg Win").fill(String(rw));
-  await page.getByLabel("OT Win").fill(String(otw));
-  await page.getByLabel("SO Win").fill(String(sow));
-  await page.getByLabel("OT Loss").fill(String(otl));
-  await page.getByLabel("SO Loss").fill(String(sol));
-  await page.getByLabel("Reg Loss").fill(String(rl));
+  await page.getByLabel("Reg Win").selectOption(String(rw));
+  await page.getByLabel("OT Win").selectOption(String(otw));
+  await page.getByLabel("SO Win").selectOption(String(sow));
+  await page.getByLabel("OT Loss").selectOption(String(otl));
+  await page.getByLabel("SO Loss").selectOption(String(sol));
+  await page.getByLabel("Reg Loss").selectOption(String(rl));
 });
 
 When("I click Calculate", async ({ page }) => {

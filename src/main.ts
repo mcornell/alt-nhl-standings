@@ -28,13 +28,15 @@ async function main() {
   const teams = data.standings.map((raw) => deriveTeamStats(raw as Parameters<typeof deriveTeamStats>[0]));
 
   const app = document.getElementById("app")!;
-  app.innerHTML = renderForm() + renderTable(teams);
+  app.style.display = "flex";
+  app.style.alignItems = "flex-start";
+  app.style.gap = "2rem";
+  app.innerHTML = renderTable(teams) + renderForm();
 
   app.querySelector("form")!.addEventListener("submit", (e) => {
     e.preventDefault();
     const pv = readPointValues(e.target as HTMLFormElement);
-    app.querySelector("table")!.outerHTML = renderTable(teams, pv);
-    app.innerHTML = renderForm() + renderTable(teams, pv);
+    app.innerHTML = renderTable(teams, pv) + renderForm();
   });
 }
 

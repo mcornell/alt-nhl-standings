@@ -24,6 +24,14 @@ Feature: View NHL standings
     And I click Calculate
     Then the first team's points show 128
 
+  Scenario: Form inputs are dropdowns with options 0 through 4
+    Given I open the standings page
+    Then the "Reg Win" input is a dropdown with options 0, 1, 2, 3, and 4
+
+  Scenario: Form defaults to NHL point values
+    Given I open the standings page
+    Then the point inputs default to Reg Win=2, OT Win=2, SO Win=2, Reg Loss=0, OT Loss=1, SO Loss=1
+
   Scenario: Standings re-rank by custom points after Calculate
     Given I open the standings page
     When I enter 2 for "Reg Win", 3 for "OT Win", 3 for "SO Win", 1 for "OT Loss", 1 for "SO Loss", 0 for "Reg Loss"
