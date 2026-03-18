@@ -48,6 +48,10 @@ export function deriveTeamStats(raw: RawTeam): TeamStats {
   };
 }
 
+export function sortByCustomPoints(teams: TeamStats[], pv: PointValues): TeamStats[] {
+  return [...teams].sort((a, b) => calculateCustomPoints(b, pv) - calculateCustomPoints(a, pv));
+}
+
 export function calculateCustomPoints(team: TeamStats, pv: PointValues): number {
   const otWins = team.regulationPlusOtWins - team.regulationWins;
   const pureOtLosses = team.otLosses - team.shootoutLosses;
