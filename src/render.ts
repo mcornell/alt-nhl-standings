@@ -8,7 +8,7 @@ interface TeamRow {
 }
 
 export function renderTableHeader(): string {
-  return `<tr><th>Team</th><th>GP</th><th>W</th><th>L</th><th>OTL</th><th>PTS</th></tr>`;
+  return `<thead><tr><th scope="col">Team</th><th scope="col">GP</th><th scope="col">W</th><th scope="col">L</th><th scope="col">OTL</th><th scope="col">PTS</th></tr></thead>`;
 }
 
 export function renderForm(): string {

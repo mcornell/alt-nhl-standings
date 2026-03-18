@@ -10,6 +10,7 @@ export default defineConfig({
   testDir,
   use: {
     baseURL: "http://localhost:5173",
+    screenshot: "on",
   },
   webServer: {
     command: "npm run dev",
