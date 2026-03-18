@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { renderTeamRow } from "./render.ts";
+import { renderTeamRow, renderForm } from "./render.ts";
 
 describe("renderTeamRow", () => {
   it("includes the team name in a data-testid='team-name' element", () => {
@@ -27,5 +27,19 @@ describe("renderTeamRow", () => {
     expect(html).toContain("13");
     expect(html).toContain("9");
     expect(html).toContain("97");
+  });
+});
+
+describe("renderForm", () => {
+  it("renders labeled inputs for all six outcomes", () => {
+    const html = renderForm();
+    for (const label of ["Reg Win", "OT Win", "SO Win", "OT Loss", "SO Loss", "Reg Loss"]) {
+      expect(html).toContain(label);
+    }
+  });
+
+  it("renders a Calculate button", () => {
+    const html = renderForm();
+    expect(html).toContain("Calculate");
   });
 });

@@ -7,6 +7,15 @@ interface TeamRow {
   points: number;
 }
 
+export function renderForm(): string {
+  const outcomes = ["Reg Win", "OT Win", "SO Win", "OT Loss", "SO Loss", "Reg Loss"];
+  const inputs = outcomes.map((label) => {
+    const id = label.toLowerCase().replace(/ /g, "-");
+    return `<label for="${id}">${label}</label><input id="${id}" type="number" min="0" max="4" />`;
+  }).join("");
+  return `<form>${inputs}<button type="submit">Calculate</button></form>`;
+}
+
 export function renderTeamRow(team: TeamRow): string {
   return `<tr>` +
     `<td data-testid="team-name">${team.teamName}</td>` +
