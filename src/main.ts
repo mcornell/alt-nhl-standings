@@ -1,7 +1,7 @@
 import { deriveTeamStats, calculateCustomPoints, groupStandings, type TeamStats, type PointValues } from "./standings.ts";
 import { renderConferenceStandings, renderForm } from "./render.ts";
 
-function getPoints(teams: TeamStats[], pv?: PointValues): (t: TeamStats) => number {
+function getPoints(_teams: TeamStats[], pv?: PointValues): (t: TeamStats) => number {
   return pv
     ? (t) => calculateCustomPoints(t, pv)
     : (t) => t.points;

@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
+  base: "/nhl/",
   server: {
     proxy: {
       "/nhl-api": {
