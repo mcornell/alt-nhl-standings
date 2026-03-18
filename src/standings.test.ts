@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { deriveTeamStats } from "./standings.ts";
+import { deriveTeamStats, calculateCustomPoints } from "./standings.ts";
 
 describe("deriveTeamStats", () => {
   it("extracts team name from raw API data", () => {
@@ -118,5 +118,25 @@ describe("deriveTeamStats", () => {
     };
 
     expect(deriveTeamStats(raw).points).toBe(97);
+  });
+});
+
+describe("calculateCustomPoints", () => {
+  it("computes points from custom per-outcome values", () => {
+    const team = {
+      teamName: "Colorado Avalanche",
+      gamesPlayed: 66,
+      wins: 44,
+      losses: 13,
+      otLosses: 9,
+      points: 97,
+      regulationWins: 39,
+      regulationPlusOtWins: 41,
+      shootoutWins: 3,
+      shootoutLosses: 5,
+    };
+    const pointValues = { regWin: 3, otWin: 2, soWin: 1, otLoss: 1, soLoss: 0, regLoss: 0 };
+    // 39*3 + 2*2 + 3*1 + 4*1 + 5*0 + 13*0 = 117 + 4 + 3 + 4 = 128
+    expect(calculateCustomPoints(team, pointValues)).toBe(128);
   });
 });
