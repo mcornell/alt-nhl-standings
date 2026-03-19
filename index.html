@@ -246,6 +246,42 @@
       form button:hover { background: #80cfff; }
       form button:active { transform: scale(0.98); }
 
+      /* ── Mobile ── */
+      @media (max-width: 720px) {
+        body {
+          padding: 1.5rem 1rem 3rem;
+        }
+
+        #app {
+          flex-direction: column;
+        }
+
+        #standings {
+          flex-direction: column;
+          gap: 0;
+        }
+
+        #form-panel {
+          width: 100%;
+          position: static;
+          order: -1;
+        }
+
+        form {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 0.5rem;
+        }
+
+        form button {
+          grid-column: 1 / -1;
+        }
+
+        .form-divider {
+          grid-column: 1 / -1;
+        }
+      }
+
       /* ── Page load fade-in ── */
       @keyframes fadeUp {
         from { opacity: 0; transform: translateY(10px); }
